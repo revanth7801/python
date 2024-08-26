@@ -1,0 +1,49 @@
+import requests
+
+def fetch_air_pollution(api_key, location):
+    url = 'http://api.openweathermap.org/data/2.5/air_pollution'
+    
+    params = {
+        'q': location,
+        'appid': api_key
+    }
+    
+    response = requests.get(url, params=params)
+    
+    if response.status_code == 200:
+        data = response.json()
+        return data
+    else:
+        print(f"Error fetching data. Status code: {response.status_code}")
+        return None
+
+def display_pollution(data):
+    if data:
+        aqi = data['list'][0]['main']['aqi']
+        components = data['list'][0]['components']
+        pm2_5 = components['pm2_5']
+        pm10 = components['pm10']
+        no2 = components['no2']
+        o3 = components['o3']
+        co = components['co']
+        so2 = components['so2']
+        
+        print(f"AQI (Air Quality Index): {aqi}")
+        print(f"PM2.5: {pm2_5} µg/m³")
+        print(f"PM10: {pm10} µg/m³")
+        print(f"NO2: {no2} µg/m³")
+        print(f"O3: {o3} µg/m³")
+        print(f"CO: {co} µg/m³")
+        print(f"SO2: {so2} µg/m³")
+    else:
+        print("No pollution data available.")
+
+def main():
+    api_key = 'YOUR_API_KEY'  # Replace with your API key
+    location = input("Enter the city name or coordinates (e.g., London, 40.7128,-74.0060): ")
+    
+    pollution_data = fetch_air_pollution(api_key, location)
+    display_pollution(pollution_data)
+
+if __name__ == "__main__":
+    main()
